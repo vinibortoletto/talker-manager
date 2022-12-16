@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const fs = require('fs').promises;
 const { join } = require('path');
+const { OK, NOT_FOUND } = require('../constants/statusCode');
 
 const router = Router();
 const PATH = join(__dirname, '../talker.json');
@@ -8,7 +9,7 @@ const PATH = join(__dirname, '../talker.json');
 router.get('/', async (_req, res) => {
   const fileContent = await fs.readFile(PATH, 'utf-8');
   const talkerList = JSON.parse(fileContent);
-  return res.status(200).json(talkerList);
+  return res.status(OK).json(talkerList);
 });
 
 router.get('/:id', async (req, res) => {
@@ -23,10 +24,10 @@ router.get('/:id', async (req, res) => {
       message: 'Pessoa palestrante não encontrada',
     };
 
-    return res.status(404).json(errorMessage);
+    return res.status(NOT_FOUND).json(errorMessage);
   }
 
-  return res.status(200).json(selectedTalker);
+  return res.status(OK).json(selectedTalker);
 });
 
 module.exports = router;
