@@ -8,6 +8,7 @@ const { validateTalk } = require('../middleware/validateTalk');
 const { validateDate } = require('../middleware/validateDate');
 const { validateRate } = require('../middleware/validateRate');
 const { addNewTalker } = require('../utils/fs/addNewTalker');
+const { updateTalkers } = require('../utils/fs/updateTalkers');
 
 const router = Router();
 
@@ -19,9 +20,9 @@ router.get('/', async (_req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const talkerList = await getTalkers();
-  const selectedTalker = talkerList.find((talker) => talker.id === Number(id));
+  const updatedTalker = talkerList.find((talker) => talker.id === Number(id));
 
-  if (!selectedTalker) {
+  if (!updatedTalker) {
     const errorMessage = {
       message: 'Pessoa palestrante não encontrada',
     };
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
     return res.status(NOT_FOUND).json(errorMessage);
   }
 
-  return res.status(OK).json(selectedTalker);
+  return res.status(OK).json(updatedTalker);
 });
 
 router.post(
@@ -58,5 +59,26 @@ router.post(
   }
   ,
 );
+
+router.put('/:id', 
+  validateToken,
+  validateName,
+  validateAge, 
+  validateTalk,
+  validateDate,
+  validateRate,
+  async (req, res) => {
+    const { name, age, talk } = req.body;
+    const { id } = req.params;
+    const talkerList = await getTalkers();
+    const updatedTalker = talkerList.find((talker) => talker.id === Number(id));
+
+    updatedTalker.name = name;
+    updatedTalker.age = age;
+    updatedTalker.talk = { ...talk };
+
+    await updateTalkers([...talkerList, updatedTalker]);
+    res.status(OK).json(updatedTalker);
+});
 
 module.exports = router;
