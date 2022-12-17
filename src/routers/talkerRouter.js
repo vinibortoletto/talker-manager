@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { OK, NOT_FOUND, CREATED } = require('../constants/statusCode');
+const { OK, NOT_FOUND, CREATED, NO_CONTENT } = require('../constants/statusCode');
 const { getTalkers } = require('../utils/fs/getTalkers');
 const { validateToken } = require('../middleware/validateToken');
 const { validateAge } = require('../middleware/validateAge');
@@ -79,6 +79,16 @@ router.put('/:id',
 
     await updateTalkers([...talkerList, updatedTalker]);
     res.status(OK).json(updatedTalker);
+});
+
+router.delete('/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const talkerList = await getTalkers();
+  const newTalkerList = talkerList.filter((talker) => talker.id !== Number(id));
+
+  await updateTalkers(newTalkerList);
+
+  return res.status(NO_CONTENT).end();
 });
 
 module.exports = router;
