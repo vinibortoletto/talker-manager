@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const { join } = require('path');
 const { getTalkers } = require('./getTalkers');
 
-const PATH = join(__dirname, '../../talker.json');
+const PATH = join(__dirname, '../talker.json');
 
 const addNewTalker = async (newTalker) => {
   const talkerList = await getTalkers();

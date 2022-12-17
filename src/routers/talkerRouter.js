@@ -5,11 +5,9 @@ const {
   CREATED,
   NO_CONTENT,
 } = require('../constants/statusCode');
-const { getTalkers } = require('../utils/fs/getTalkers');
-const { addNewTalker } = require('../utils/fs/addNewTalker');
-const { updateTalkers } = require('../utils/fs/updateTalkers');
 
 const middleware = require('../middleware');
+const { getTalkers, addNewTalker, updateTalkers } = require('../utils');
 
 const router = Router();
 

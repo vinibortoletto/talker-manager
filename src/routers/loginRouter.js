@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { generateToken } = require('../utils/generateToken');
 const { OK } = require('../constants/statusCode');
 const middleware = require('../middleware');
+const { generateToken } = require('../utils');
 
 const router = Router();
 
