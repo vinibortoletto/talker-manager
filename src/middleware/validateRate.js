@@ -5,7 +5,7 @@ const validateRate = (req, res, next) => {
   const rateRequired = 'O campo "rate" é obrigatório';
   const rateMustBeInteger = 'O campo "rate" deve ser um inteiro de 1 à 5';
 
-  if (!rate) {
+  if (rate === undefined) {
     return res.status(BAD_REQUEST).json({ message: rateRequired });
   }
   
