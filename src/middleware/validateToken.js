@@ -1,15 +1,15 @@
 const { UNAUTHORIZED } = require('../constants/statusCode');
 
 const validateToken = (req, res, next) => {
-  const { token } = req.headers;
-  const tokenRequired = 'Token não encontrado';
+  const { authorization } = req.headers;
+  const tokenNotFound = 'Token não encontrado';
   const tokenInvalid = 'Token inválido';
 
-  if (!token) {
-    return res.status(UNAUTHORIZED).json({ message: tokenRequired });
+  if (!authorization) {
+    return res.status(UNAUTHORIZED).json({ message: tokenNotFound });
   }
 
-  if (token.length !== 16 || typeof token !== 'string') {
+  if (authorization.length !== 16 || typeof authorization !== 'string') {
     return res.status(UNAUTHORIZED).json({ message: tokenInvalid });
   }
 
