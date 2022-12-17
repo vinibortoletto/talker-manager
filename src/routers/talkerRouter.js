@@ -1,21 +1,23 @@
 const { Router } = require('express');
-const { OK, NOT_FOUND, CREATED, NO_CONTENT } = require('../constants/statusCode');
+const {
+  OK,
+  NOT_FOUND,
+  CREATED,
+  NO_CONTENT,
+} = require('../constants/statusCode');
 const { getTalkers } = require('../utils/fs/getTalkers');
-const { validateToken } = require('../middleware/validateToken');
-const { validateAge } = require('../middleware/validateAge');
-const { validateName } = require('../middleware/validateName');
-const { validateTalk } = require('../middleware/validateTalk');
-const { validateDate } = require('../middleware/validateDate');
-const { validateRate } = require('../middleware/validateRate');
 const { addNewTalker } = require('../utils/fs/addNewTalker');
 const { updateTalkers } = require('../utils/fs/updateTalkers');
 
+const middleware = require('../middleware');
+
 const router = Router();
 
-router.get('/search', validateToken, async (req, res) => {
+router.get('/search', middleware.validateToken, async (req, res) => {
   const { q: searchedName } = req.query;
   const talkerList = await getTalkers();
-  const filteredTalkerList = talkerList.filter((talker) => talker.name.includes(searchedName));
+  const filteredTalkerList = talkerList.filter((talker) =>
+    talker.name.includes(searchedName));
 
   if (!searchedName || searchedName.length === 0) {
     return res.status(OK).json(talkerList);
@@ -47,12 +49,12 @@ router.get('/:id', async (req, res) => {
 
 router.post(
   '/',
-  validateToken,
-  validateName,
-  validateAge, 
-  validateTalk,
-  validateDate,
-  validateRate,
+  middleware.validateToken,
+  middleware.validateName,
+  middleware.validateAge,
+  middleware.validateTalk,
+  middleware.validateDate,
+  middleware.validateRate,
   async (req, res) => {
     const { name, age, talk } = req.body;
     const talkerList = await getTalkers();
@@ -66,19 +68,19 @@ router.post(
     };
 
     await addNewTalker(newTalker);
-    
+
     res.status(CREATED).json(newTalker);
-  }
-  ,
+  },
 );
 
-router.put('/:id', 
-  validateToken,
-  validateName,
-  validateAge, 
-  validateTalk,
-  validateDate,
-  validateRate,
+router.put(
+  '/:id',
+  middleware.validateToken,
+  middleware.validateName,
+  middleware.validateAge,
+  middleware.validateTalk,
+  middleware.validateDate,
+  middleware.validateRate,
   async (req, res) => {
     const { name, age, talk } = req.body;
     const { id } = req.params;
@@ -91,9 +93,10 @@ router.put('/:id',
 
     await updateTalkers([...talkerList, updatedTalker]);
     res.status(OK).json(updatedTalker);
-});
+  },
+);
 
-router.delete('/:id', validateToken, async (req, res) => {
+router.delete('/:id', middleware.validateToken, async (req, res) => {
   const { id } = req.params;
   const talkerList = await getTalkers();
   const newTalkerList = talkerList.filter((talker) => talker.id !== Number(id));
