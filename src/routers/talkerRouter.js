@@ -1,6 +1,7 @@
 const { Router } = require('express');
-const { OK, NOT_FOUND } = require('../constants/statusCode');
+const { OK, NOT_FOUND, CREATED } = require('../constants/statusCode');
 const { readTalkerFile } = require('../utils/fs/readTalkerFile');
+const { validateToken } = require('../middleware/validateToken');
 
 const router = Router();
 
@@ -23,6 +24,10 @@ router.get('/:id', async (req, res) => {
   }
 
   return res.status(OK).json(selectedTalker);
+});
+
+router.post('/:id', validateToken, async (req, res) => {
+  return res.status(CREATED).json({});
 });
 
 module.exports = router;
