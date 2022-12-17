@@ -12,6 +12,18 @@ const { updateTalkers } = require('../utils/fs/updateTalkers');
 
 const router = Router();
 
+router.get('/search', validateToken, async (req, res) => {
+  const { q: searchedName } = req.query;
+  const talkerList = await getTalkers();
+  const filteredTalkerList = talkerList.filter((talker) => talker.name.includes(searchedName));
+
+  if (!searchedName || searchedName.length === 0) {
+    return res.status(OK).json(talkerList);
+  }
+
+  return res.status(OK).json(filteredTalkerList);
+});
+
 router.get('/', async (_req, res) => {
   const talkerList = await getTalkers();
   return res.status(OK).json(talkerList);
