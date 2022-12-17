@@ -1,12 +1,12 @@
 const fs = require('fs').promises;
 const { join } = require('path');
-const { readTalkerFile } = require('./readTalkerFile');
+const { getTalkers } = require('./getTalkers');
 
 const PATH = join(__dirname, '../../talker.json');
 
-const writeTalkerFile = async (newTalker) => {
-  const talkerList = await readTalkerFile();
+const addNewTalker = async (newTalker) => {
+  const talkerList = await getTalkers();
   await fs.writeFile(PATH, JSON.stringify([...talkerList, newTalker]));
 };
 
-module.exports = { writeTalkerFile };
+module.exports = { addNewTalker };

@@ -1,24 +1,24 @@
 const { Router } = require('express');
 const { OK, NOT_FOUND, CREATED } = require('../constants/statusCode');
-const { readTalkerFile } = require('../utils/fs/readTalkerFile');
+const { getTalkers } = require('../utils/fs/getTalkers');
 const { validateToken } = require('../middleware/validateToken');
 const { validateAge } = require('../middleware/validateAge');
 const { validateName } = require('../middleware/validateName');
 const { validateTalk } = require('../middleware/validateTalk');
 const { validateDate } = require('../middleware/validateDate');
 const { validateRate } = require('../middleware/validateRate');
-const { writeTalkerFile } = require('../utils/fs/writeTalkerFile');
+const { addNewTalker } = require('../utils/fs/addNewTalker');
 
 const router = Router();
 
 router.get('/', async (_req, res) => {
-  const talkerList = await readTalkerFile();
+  const talkerList = await getTalkers();
   return res.status(OK).json(talkerList);
 });
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const talkerList = await readTalkerFile();
+  const talkerList = await getTalkers();
   const selectedTalker = talkerList.find((talker) => talker.id === Number(id));
 
   if (!selectedTalker) {
@@ -42,7 +42,7 @@ router.post(
   validateRate,
   async (req, res) => {
     const { name, age, talk } = req.body;
-    const talkerList = await readTalkerFile();
+    const talkerList = await getTalkers();
     const newTalkerId = talkerList[talkerList.length - 1].id + 1;
 
     const newTalker = {
@@ -52,7 +52,7 @@ router.post(
       talk,
     };
 
-    await writeTalkerFile(newTalker);
+    await addNewTalker(newTalker);
     
     res.status(CREATED).json(newTalker);
   }
