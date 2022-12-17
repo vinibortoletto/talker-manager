@@ -7,6 +7,7 @@ const { validateName } = require('../middleware/validateName');
 const { validateTalk } = require('../middleware/validateTalk');
 const { validateDate } = require('../middleware/validateDate');
 const { validateRate } = require('../middleware/validateRate');
+const { writeTalkerFile } = require('../utils/fs/writeTalkerFile');
 
 const router = Router();
 
@@ -39,9 +40,22 @@ router.post(
   validateTalk,
   validateDate,
   validateRate,
-  async (req, res) => 
-    // const newTalker = await writeTalkerFile(req.body);    
-     res.status(CREATED).json(...req.body)
+  async (req, res) => {
+    const { name, age, talk } = req.body;
+    const talkerList = await readTalkerFile();
+    const newTalkerId = talkerList[talkerList.length - 1].id + 1;
+
+    const newTalker = {
+      id: newTalkerId,
+      name,
+      age,
+      talk,
+    };
+
+    await writeTalkerFile(newTalker);
+    
+    res.status(CREATED).json(newTalker);
+  }
   ,
 );
 
