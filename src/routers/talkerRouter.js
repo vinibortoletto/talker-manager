@@ -4,6 +4,9 @@ const { readTalkerFile } = require('../utils/fs/readTalkerFile');
 const { validateToken } = require('../middleware/validateToken');
 const { validateAge } = require('../middleware/validateAge');
 const { validateName } = require('../middleware/validateName');
+const { validateTalk } = require('../middleware/validateTalk');
+const { validateDate } = require('../middleware/validateDate');
+const { validateRate } = require('../middleware/validateRate');
 
 const router = Router();
 
@@ -29,11 +32,17 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post(
-  '/:id',
+  '/',
   validateToken,
   validateName,
   validateAge, 
-  (_req, res) => res.status(CREATED).json({}),
+  validateTalk,
+  validateDate,
+  validateRate,
+  async (req, res) => 
+    // const newTalker = await writeTalkerFile(req.body);    
+     res.status(CREATED).json(...req.body)
+  ,
 );
 
 module.exports = router;
